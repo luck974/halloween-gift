@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>万圣节快乐 · Happy Halloween</title>
+<style>
+  :root{
+    --o1:#ffbe7c; --o2:#f8973f; --o3:#ef7c26; --o4:#e06a15;
+    --ink:#5a3310;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:radial-gradient(120% 90% at 50% 0%, #2a1608 0%, #110a05 70%);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+    overflow:hidden;
+  }
+  .card{
+    position:relative;width:100%;max-width:430px;
+    height:min(100svh, 940px);
+    background:linear-gradient(168deg, var(--o1) 0%, var(--o2) 34%, var(--o3) 68%, var(--o4) 100%);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+    isolation:isolate;
+  }
+
+  /* 纸纹 */
+  .paper{
+    position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;
+    mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+  }
+
+  /* 飘落雪花 */
+  .petals{position:absolute;inset:0;z-index:1;pointer-events:none}
+
+  /* 蜘蛛网 */
+  .web{position:absolute;width:112px;height:112px;z-index:2;opacity:.32;pointer-events:none}
+  .web.tl{left:-8px;top:-8px}
+  .web.tr{right:-8px;top:-8px;transform:scaleX(-1)}
+  .web.bl{left:-8px;bottom:-8px;transform:scaleY(-1);opacity:.22}
+  .web.br{right:-8px;bottom:-8px;transform:scale(-1,-1);opacity:.22}
+
+  /* 标题 */
+  .header{position:relative;z-index:3;padding:calc(2.4vh + 10px) 14px 0;text-align:center}
+  .header h1{
+    font-family:"Segoe Script","Bradley Hand","Snell Roundhand","STXingkai",cursive;
+    font-size:clamp(21px, 6.2vw, 28px);
+    font-weight:400;font-style:italic;
+    color:#fffaf3;letter-spacing:.5px;white-space:nowrap;
+    text-shadow:0 2px 0 rgba(185,88,8,.55), 0 10px 20px rgba(140,55,0,.35);
+  }
+  .header h1 em{font-style:normal;margin-left:5px;filter:drop-shadow(0 2px 4px rgba(120,45,0,.4))}
+
+  /* 相框 */
+  .frame{
+    position:relative;z-index:3;
+    margin:calc(1.6vh + 6px) auto 0;
+    width:calc(100% - 50px);max-width:352px;
+    background:#fffdf8;padding:7px 7px 5px;border-radius:4px;
+    box-shadow:0 16px 32px rgba(120,50,0,.3), inset 0 0 0 1px rgba(255,255,255,.8);
+    transform:rotate(-1.2deg);
+  }
+  .frame svg{display:block;width:100%;height:auto;border-radius:2px}
+
+  /* 祝福文案 */
+  .bless{
+    position:relative;z-index:3;flex:1;
+    display:flex;flex-direction:column;justify-content:flex-start;align-items:center;
+    gap:.66em;padding:2.2vh 24px 0;text-align:center;
+  }
+  .bless p{
+    font-family:"STKaiti","KaiTi","楷体",serif;
+    font-size:clamp(14px, 3.75vw, 17.5px);
+    line-height:1.5;letter-spacing:.5px;color:var(--ink);
+    text-shadow:0 1px 0 rgba(255,255,255,.35);
+    min-height:1.5em;opacity:0;
+  }
+  .bless p.in{opacity:1}
+  .bless p:first-child{font-weight:700;font-size:clamp(15px, 4.1vw, 19px)}
+  .bless p:last-child{color:#b8460c;font-weight:700;letter-spacing:2px}
+
+  /* 底部场景 */
+  .footer{position:relative;z-index:2;height:32vh;min-height:222px;margin-top:-1.5vh;flex:none}
+  .footer svg{position:absolute;inset:0;width:100%;height:100%}
+  .footer::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:40%;z-index:1;
+    background:linear-gradient(to top, rgba(10,5,3,.55), transparent);pointer-events:none;
+  }
+
+  /* 万圣节 大字 */
+  .title-cn{
+    position:absolute;left:50%;top:1.2vh;z-index:2;
+    transform:translateX(-50%) rotate(-4deg);
+    font-family:"STKaiti","KaiTi","楷体",serif;
+    font-size:clamp(38px, 12.4vw, 58px);font-weight:700;
+    letter-spacing:3px;white-space:nowrap;
+    color:#3d1e07;
+    -webkit-text-fill-color:#3d1e07;
+    paint-order:stroke fill;
+    -webkit-text-stroke:3px #ffefdc;
+    text-shadow:0 5px 0 #b8460c, 0 10px 22px rgba(70,25,0,.4);
+  }
+  .ribbon{
+    position:absolute;left:50%;top:calc(1.2vh + 58px);z-index:2;
+    transform:translateX(-50%) rotate(-4deg);
+    background:#7a2d08;color:#ffe6c8;
+    font-family:Impact,"Haettenschweiler","Arial Black",sans-serif;
+    font-size:clamp(9px, 2.5vw, 11px);letter-spacing:3px;
+    padding:4px 14px 3px;border-radius:2px;
+    box-shadow:0 3px 0 rgba(60,20,0,.35);
+  }
+
+  /* 音乐按钮 */
+  .sound{
+    position:absolute;right:12px;top:calc(1.4vh + 10px);z-index:7;
+    width:36px;height:36px;border:0;border-radius:50%;cursor:pointer;
+    background:rgba(255,245,230,.28);color:#fffaf2;
+    font-size:15px;line-height:36px;text-align:center;padding:0;
+    box-shadow:0 4px 12px rgba(110,40,0,.28), inset 0 0 0 1px rgba(255,255,255,.35);
+    transition:background .3s, color .3s, transform .3s;
+  }
+  .sound.on{background:rgba(255,247,235,.72);color:#8a3208;transform:rotate(-8deg)}
+  .sound-hint{
+    position:absolute;left:50%;right:auto;bottom:10px;top:auto;z-index:7;
+    transform:translateX(-50%);
+    font-size:11px;letter-spacing:1px;color:#fff6e9;
+    background:rgba(96,38,4,.38);padding:4px 10px;border-radius:20px;
+    pointer-events:none;transition:opacity .6s;white-space:nowrap;
+  }
+  .sound-hint.hide{opacity:0}
+
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes fly{0%,100%{transform:translate(0,0)}50%{transform:translate(13px,-9px)}}
+  @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+
+  .ghost{animation:floaty 3.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  .ghost.g2{animation-delay:-1.7s}
+  .bat{animation:fly 7s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  .bat.b2{animation-duration:9.2s;animation-delay:-2.6s}
+  .tw{animation:twinkle 2.6s ease-in-out infinite}
+  .tw.s2{animation-duration:3.4s;animation-delay:-1.2s}
+  .pumpkin{animation:breathe 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+
+  @media (prefers-reduced-motion: reduce){
+    .ghost,.bat,.tw,.pumpkin{animation:none}
+  }
+  @media (max-height:720px){
+    .header{padding-top:calc(1.4vh + 6px)}
+    .footer{height:27vh;min-height:186px}
+    .bless{gap:.4em}
+    .title-cn{font-size:clamp(32px,10vw,44px);top:.6vh}
+    .ribbon{top:calc(.6vh + 46px)}
+  }
+
+  /* ─────────── 口令门禁 ─────────── */
+  .gate{
+    position:fixed;inset:0;z-index:10000;
+    background:radial-gradient(120% 90% at 50% 0%, #2a1608 0%, #110a05 78%);
+    display:flex;align-items:center;justify-content:center;
+    transition:opacity .45s, visibility .45s;
+  }
+  .gate.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .gate-box{
+    width:90%;max-width:340px;
+    background:linear-gradient(168deg, #3a1c08, #1a0d04);
+    border:1px solid rgba(255,190,124,.35);
+    border-radius:18px;padding:34px 28px;text-align:center;
+    box-shadow:0 24px 60px rgba(0,0,0,.65);
+  }
+  .gate-box .icon{font-size:46px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 4px 10px rgba(240,120,38,.55))}
+  .gate-box h2{font-family:"STKaiti","KaiTi","楷体",serif;color:#ffbe7c;font-size:23px;letter-spacing:3px;margin-bottom:6px}
+  .gate-box p{color:#d9a06a;font-size:12.5px;letter-spacing:1.5px;margin-bottom:20px}
+  .gate-row{display:flex;gap:8px}
+  .gate-row input{
+    flex:1;min-width:0;padding:11px 14px;border-radius:12px;
+    border:1px solid rgba(255,190,124,.4);background:rgba(0,0,0,.35);
+    color:#fff6e9;font-size:16px;text-align:center;letter-spacing:4px;
+    font-family:inherit;outline:none;
+  }
+  .gate-row input:focus{border-color:#ffbe7c}
+  .gate-row input.wrong{animation:shake .5s ease;border-color:#ff5a3c}
+  .gate-row button{
+    padding:11px 22px;border-radius:12px;border:none;
+    background:linear-gradient(135deg,#f8973f,#e06a15);color:#fff;
+    font-weight:700;font-size:15px;letter-spacing:2px;cursor:pointer;font-family:inherit;
+    box-shadow:0 4px 14px rgba(240,120,38,.45);
+  }
+  .gate-row button:active{transform:scale(.96)}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+
+  /* ─────────── 抽签入口按钮 ─────────── */
+  .draw-entry{
+    position:absolute;left:50%;bottom:3.2vh;z-index:8;
+    transform:translateX(-50%) translateY(14px);
+    padding:13px 28px;border:none;border-radius:999px;cursor:pointer;
+    font-family:inherit;font-size:clamp(15px,4.2vw,18px);font-weight:700;letter-spacing:2px;color:#fff;
+    background:linear-gradient(135deg,#f8973f,#c8500a);
+    box-shadow:0 8px 24px rgba(120,40,0,.5), inset 0 0 0 1px rgba(255,255,255,.3);
+    opacity:0;visibility:hidden;white-space:nowrap;
+    transition:opacity .6s, transform .6s, visibility .6s;
+  }
+  .draw-entry.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);animation:pulse 1.9s ease-in-out infinite}
+  .draw-entry:active{transform:translateX(-50%) translateY(0) scale(.95)}
+  @keyframes pulse{
+    0%,100%{box-shadow:0 8px 24px rgba(120,40,0,.5),0 0 0 0 rgba(255,190,124,.55)}
+    50%{box-shadow:0 8px 24px rgba(120,40,0,.5),0 0 0 13px rgba(255,190,124,0)}
+  }
+
+  /* ─────────── 抽签转盘 ─────────── */
+  .draw-overlay{
+    position:fixed;inset:0;z-index:9000;
+    background:radial-gradient(120% 90% at 50% 0%, #241430 0%, #0d0713 74%);
+    display:flex;align-items:center;justify-content:center;padding:16px;
+    opacity:0;visibility:hidden;transition:opacity .4s, visibility .4s;
+  }
+  .draw-overlay.open{opacity:1;visibility:visible}
+  .draw-panel{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+  .draw-panel h2{font-family:"STKaiti","KaiTi","楷体",serif;color:#ffbe7c;font-size:27px;letter-spacing:3px;text-shadow:0 2px 0 rgba(120,40,0,.5)}
+  .draw-panel .sub{color:#c9a4e0;font-size:12.5px;letter-spacing:2px}
+  .wheel-wrap{position:relative;width:min(78vw,300px);height:min(78vw,300px);flex-shrink:0}
+  .wheel-wrap canvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 44px rgba(233,111,60,.32),0 0 90px rgba(140,70,200,.16)}
+  .wheel-pointer{
+    position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:5;
+    width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;
+    border-top:30px solid #ffbe7c;filter:drop-shadow(0 3px 6px rgba(0,0,0,.55));
+  }
+  .wheel-pointer.bounce{animation:pointerBounce2 .14s steps(1) infinite}
+  @keyframes pointerBounce2{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+  .draw-result{min-height:58px;display:flex;align-items:center;justify-content:center}
+  .draw-result .tag{
+    display:none;padding:12px 26px;border-radius:999px;font-size:19px;font-weight:700;letter-spacing:1px;color:#2a1608;
+    background:linear-gradient(135deg,#ffbe7c,#f8973f);box-shadow:0 4px 18px rgba(248,151,63,.45);
+    animation:popIn .45s cubic-bezier(.175,.885,.32,1.275);
+  }
+  .draw-result .tag.show{display:inline-block}
+  @keyframes popIn{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+  .draw-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .draw-actions button{padding:12px 30px;border-radius:999px;border:none;cursor:pointer;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:2px}
+  .draw-spin{background:linear-gradient(135deg,#f8973f,#c8500a);color:#fff;box-shadow:0 6px 20px rgba(248,151,63,.4)}
+  .draw-spin:disabled{opacity:.45;cursor:not-allowed}
+  .draw-close{background:transparent;color:#e8c9ff;border:1px solid rgba(232,201,255,.4)}
+  #confetti2{position:fixed;inset:0;pointer-events:none;z-index:9500}
+</style>
+</head>
+<body>
+
+<!-- 口令门禁 -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <div class="icon">🎃</div>
+    <h2>万圣节限定</h2>
+    <p>输入口令，解锁这份礼物</p>
+    <div class="gate-row">
+      <input type="password" id="gatePwd" placeholder="口令" maxlength="12" autocomplete="off">
+      <button id="gateBtn" type="button">进入</button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+
+  <div class="paper"></div>
+  <canvas class="petals"></canvas>
+
+  <!-- 四角蛛网 -->
+  <svg class="web tl" viewBox="0 0 100 100" aria-hidden="true">
+    <g fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".95">
+      <path d="M0 0 L100 0 M0 0 L70 70 M0 0 L0 100"/>
+      <path d="M14 0 Q10 10 0 14" />
+      <path d="M30 0 Q22 22 0 30" />
+      <path d="M48 0 Q34 34 0 48" />
+      <path d="M66 0 Q46 46 0 66" />
+      <path d="M84 0 Q58 58 0 84" />
+    </g>
+  </svg>
+  <svg class="web tr" viewBox="0 0 100 100" aria-hidden="true">
+    <g fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".95">
+      <path d="M0 0 L100 0 M0 0 L70 70 M0 0 L0 100"/>
+      <path d="M14 0 Q10 10 0 14" />
+      <path d="M30 0 Q22 22 0 30" />
+      <path d="M48 0 Q34 34 0 48" />
+      <path d="M66 0 Q46 46 0 66" />
+      <path d="M84 0 Q58 58 0 84" />
+    </g>
+  </svg>
+  <svg class="web bl" viewBox="0 0 100 100" aria-hidden="true">
+    <g fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round">
+      <path d="M0 0 L100 0 M0 0 L70 70 M0 0 L0 100"/>
+      <path d="M14 0 Q10 10 0 14" />
+      <path d="M30 0 Q22 22 0 30" />
+      <path d="M48 0 Q34 34 0 48" />
+    </g>
+  </svg>
+  <svg class="web br" viewBox="0 0 100 100" aria-hidden="true">
+    <g fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round">
+      <path d="M0 0 L100 0 M0 0 L70 70 M0 0 L0 100"/>
+      <path d="M14 0 Q10 10 0 14" />
+      <path d="M30 0 Q22 22 0 30" />
+      <path d="M48 0 Q34 34 0 48" />
+    </g>
+  </svg>
+
+  <header class="header">
+    <h1>Happy Halloween <em>🎃</em></h1>
+  </header>
+
+  <button class="sound" id="snd" type="button" aria-label="开关音乐">🔇</button>
+  <div class="sound-hint" id="sndHint">🔊 点一下开启音乐</div>
+
+  <!-- 相框里的画 -->
+  <div class="frame">
+    <svg viewBox="0 0 300 200" role="img" aria-label="南瓜灯与两个小鬼">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3b2256"/>
+          <stop offset=".55" stop-color="#5c3568"/>
+          <stop offset="1" stop-color="#7b4a69"/>
+        </linearGradient>
+        <radialGradient id="glow">
+          <stop offset="0" stop-color="#fff6d8" stop-opacity=".6"/>
+          <stop offset="1" stop-color="#fff6d8" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3c2450"/>
+          <stop offset="1" stop-color="#2a1838"/>
+        </linearGradient>
+        <radialGradient id="pump" cx=".42" cy=".36" r=".75">
+          <stop offset="0" stop-color="#ffa63d"/>
+          <stop offset=".65" stop-color="#f4801f"/>
+          <stop offset="1" stop-color="#d8620f"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="300" height="200" fill="url(#sky)"/>
+
+      <circle cx="238" cy="46" r="46" fill="url(#glow)"/>
+      <circle cx="238" cy="46" r="20" fill="#fdf3d2"/>
+      <circle cx="231" cy="40" r="3" fill="#e6d6a8" opacity=".7"/>
+      <circle cx="244" cy="52" r="2.2" fill="#e6d6a8" opacity=".6"/>
+      <circle cx="243" cy="38" r="1.6" fill="#e6d6a8" opacity=".5"/>
+
+      <g fill="#fff8e2">
+        <circle class="tw" cx="28" cy="34" r="1.6"/>
+        <circle class="tw s2" cx="62" cy="18" r="1.2"/>
+        <circle class="tw" cx="102" cy="30" r="1.3"/>
+        <circle class="tw s2" cx="150" cy="16" r="1.1"/>
+        <circle class="tw" cx="186" cy="34" r="1.2"/>
+        <circle class="tw s2" cx="272" cy="24" r="1.4"/>
+        <circle class="tw" cx="118" cy="56" r="1"/>
+        <circle class="tw s2" cx="204" cy="62" r="1"/>
+      </g>
+
+      <path d="M0 132 q30 -20 62 -6 q28 12 56 -2 q30 -14 62 0 q28 12 58 2 q32 -8 62 4 v70 H0 Z" fill="url(#hill)"/>
+
+      <!-- 小鬼 左 -->
+      <g transform="translate(70,110) scale(.95)"><g class="ghost">
+        <path d="M0 -26 a21 24 0 0 1 21 24 v22 q-5 -6 -10 0 q-5 6 -11 0 q-5 -6 -10 0 q-5 6 -11 0 v-22 a21 24 0 0 1 21 -24 Z" fill="#fdfaf5"/>
+        <ellipse cx="-7" cy="3" rx="3.3" ry="4.4" fill="#2b1a2e"/>
+        <ellipse cx="7" cy="3" rx="3.3" ry="4.4" fill="#2b1a2e"/>
+        <ellipse cx="0" cy="14" rx="2.8" ry="3.6" fill="#2b1a2e" opacity=".7"/>
+      </g></g>
+
+      <!-- 小鬼 右 -->
+      <g transform="translate(232,106) scale(1.02)"><g class="ghost g2">
+        <path d="M0 -26 a21 24 0 0 1 21 24 v22 q-5 -6 -10 0 q-5 6 -11 0 q-5 -6 -10 0 q-5 6 -11 0 v-22 a21 24 0 0 1 21 -24 Z" fill="#fdfaf5"/>
+        <ellipse cx="-7" cy="3" rx="3.3" ry="4.4" fill="#2b1a2e"/>
+        <ellipse cx="7" cy="3" rx="3.3" ry="4.4" fill="#2b1a2e"/>
+        <ellipse cx="0" cy="14" rx="2.8" ry="3.6" fill="#2b1a2e" opacity=".7"/>
+      </g></g>
+
+      <!-- 南瓜 -->
+      <g transform="translate(150,118) scale(.92)"><g class="pumpkin">
+        <ellipse cx="0" cy="0" rx="44" ry="36" fill="url(#pump)"/>
+        <path d="M0 -36 q-3 -12 3 -16 q6 4 3 16 Z" fill="#4b7a2a"/>
+        <path d="M-15 -34 q5 20 3 46 q-8 -4 -9 -22 q-1 -14 6 -24 Z" fill="#e2680f" opacity=".45"/>
+        <path d="M15 -34 q-5 20 -3 46 q8 -4 9 -22 q1 -14 -6 -24 Z" fill="#e2680f" opacity=".45"/>
+        <path d="M-47 6 q16 8 47 8 q31 0 47 -8 q-4 20 -22 26 q-25 9 -50 0 q-18 -6 -22 -26 Z" fill="#c85a0c" opacity=".28"/>
+        <path d="M-20 -8 l11 0 l-7 8 l10 0 l-13 12 l4 -9 l-11 0 Z" fill="#ffcf5e"/>
+        <path d="M20 -8 l-11 0 l7 8 l-10 0 l13 12 l-4 -9 l11 0 Z" fill="#ffcf5e"/>
+        <path d="M-13 12 q13 11 26 0 q-4 3 -6 -1 q-4 6 -14 0 q-2 4 -6 1 Z" fill="#ffcf5e"/>
+      </g></g>
+
+      <!-- 蝙蝠 -->
+      <g fill="#1d1020">
+        <g transform="translate(50,42) scale(.8)"><path class="bat" d="M0 0 q6 -7 12 -1 q5 -8 12 -3 q-6 3 -7 9 q-6 -4 -10 1 q-4 -5 -7 -6 Z"/></g>
+        <g transform="translate(146,22) scale(.55)"><path class="bat b2" d="M0 0 q6 -7 12 -1 q5 -8 12 -3 q-6 3 -7 9 q-6 -4 -10 1 q-4 -5 -7 -6 Z"/></g>
+      </g>
+
+      <text x="150" y="187" text-anchor="middle"
+            font-family="Impact, 'Arial Black', sans-serif" font-size="15"
+            letter-spacing="1.6" fill="#ff7a33" stroke="#2a1230" stroke-width=".6">HAPPY HALLOWEEN!</text>
+    </svg>
+  </div>
+
+  <!-- 祝福 -->
+  <div class="bless">
+    <p data-text="万圣节到了 🎃 你的礼物请收好～"></p>
+    <p data-text="🎃 送你个开心鬼，愿你开心每一天"></p>
+    <p data-text="👻 送你个富贵鬼，愿你富贵每一天"></p>
+    <p data-text="🧟 送你个幸福鬼，愿你幸福每一天"></p>
+    <p data-text="💀 送你个万能鬼，愿你事事皆顺心"></p>
+    <p data-text="HAPPY 🎃"></p>
+  </div>
+
+  <!-- 抽签入口 -->
+  <button class="draw-entry" id="drawEntry" type="button">🎃 抽个万圣节幸运签</button>
+
+  <!-- 底部城堡 -->
+  <div class="footer">
+    <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#331809"/>
+          <stop offset="1" stop-color="#120a05"/>
+        </linearGradient>
+      </defs>
+
+      <g fill="#170a06">
+        <g transform="translate(240,112) scale(.85)"><path class="bat" d="M0 0 q7 -9 14 -1 q6 -10 15 -4 q-8 4 -9 11 q-7 -5 -12 1 q-5 -6 -8 -7 Z"/></g>
+        <g transform="translate(338,92) scale(.6)"><path class="bat b2" d="M0 0 q7 -9 14 -1 q6 -10 15 -4 q-8 4 -9 11 q-7 -5 -12 1 q-5 -6 -8 -7 Z"/></g>
+      </g>
+
+      <!-- 城堡 -->
+      <g fill="#1b0e08">
+        <rect x="64" y="164" width="26" height="60"/>
+        <path d="M64 164 L77 142 L90 164 Z"/>
+        <rect x="94" y="146" width="36" height="78"/>
+        <path d="M94 146 L112 116 L130 146 Z"/>
+        <rect x="134" y="158" width="26" height="66"/>
+        <path d="M134 158 L147 136 L160 158 Z"/>
+        <rect x="150" y="176" width="12" height="22" fill="#0f0704"/>
+      </g>
+      <g fill="#ffcf70" opacity=".9">
+        <rect x="72" y="176" width="7" height="10" rx="1"/>
+        <rect x="104" y="160" width="8" height="11" rx="1"/>
+        <rect x="116" y="182" width="7" height="10" rx="1"/>
+        <rect x="104" y="192" width="7" height="9" rx="1" opacity=".75"/>
+        <rect x="142" y="170" width="7" height="10" rx="1"/>
+        <rect x="142" y="192" width="7" height="9" rx="1" opacity=".6"/>
+      </g>
+
+      <!-- 黑猫 -->
+      <g fill="#160b06" transform="translate(236,196)">
+        <ellipse cx="0" cy="3" rx="11" ry="14"/>
+        <circle cx="0" cy="-13" r="8.5"/>
+        <path d="M-8 -18 l1 -9 l7 5 Z"/>
+        <path d="M8 -18 l-1 -9 l-7 5 Z"/>
+        <path d="M-10 8 q-13 -2 -12 -14 q3 9 12 8 Z"/>
+        <circle cx="-3" cy="-14" r="1.5" fill="#ffcf70"/>
+        <circle cx="3.4" cy="-14" r="1.5" fill="#ffcf70"/>
+      </g>
+
+      <!-- 小南瓜 -->
+      <g transform="translate(300,206) scale(.34)">
+        <ellipse cx="0" cy="0" rx="44" ry="36" fill="url(#pump)"/>
+        <path d="M0 -36 q-3 -12 3 -16 q6 4 3 16 Z" fill="#4b7a2a"/>
+        <path d="M-20 -8 l11 0 l-7 8 l10 0 l-13 12 l4 -9 l-11 0 Z" fill="#ffcf5e"/>
+        <path d="M20 -8 l-11 0 l7 8 l-10 0 l13 12 l-4 -9 l11 0 Z" fill="#ffcf5e"/>
+      </g>
+
+      <!-- 白鬼 -->
+      <g transform="translate(316,150) scale(1.15)"><g class="ghost">
+        <path d="M0 -20 a17 19 0 0 1 17 19 v17 q-4 -5 -8.5 0 q-4 5 -8.5 0 q-4.5 -5 -8.5 0 q-4.5 5 -8.5 0 v-17 a17 19 0 0 1 17 -19 Z" fill="#fdfaf5"/>
+        <ellipse cx="-5.5" cy="2" rx="2.5" ry="3.4" fill="#241428"/>
+        <ellipse cx="5.5" cy="2" rx="2.5" ry="3.4" fill="#241428"/>
+        <ellipse cx="0" cy="11" rx="2.2" ry="2.8" fill="#241428" opacity=".7"/>
+      </g></g>
+
+      <!-- 地面 -->
+      <path d="M0 178 q46 -12 92 -4 q40 7 78 -3 q46 -12 90 0 q40 11 76 3 q32 -7 64 2 L400 240 L0 240 Z" fill="url(#ground)"/>
+    </svg>
+
+    <div class="title-cn">万圣节</div>
+    <div class="ribbon">HALLOWEEN</div>
+  </div>
+
+</div>
+
+<!-- 抽签转盘 -->
+<div class="draw-overlay" id="drawOverlay">
+  <div class="draw-panel">
+    <h2>🎃 万圣节幸运签</h2>
+    <p class="sub">转一转，看看今晚的运势</p>
+    <div class="wheel-wrap">
+      <div class="wheel-pointer" id="drawPointer"></div>
+      <canvas id="drawWheel" width="600" height="600"></canvas>
+    </div>
+    <div class="draw-result"><div class="tag" id="drawResult"></div></div>
+    <div class="draw-actions">
+      <button class="draw-spin" id="drawSpin" type="button">🎯 开始抽签</button>
+      <button class="draw-close" id="drawClose" type="button">返回</button>
+    </div>
+  </div>
+</div>
+<canvas id="confetti2"></canvas>
+
+<script>
+(function(){
+  var card = document.querySelector('.card');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 飘落的小白点 / 雪花 ---------- */
+  var cvs = document.querySelector('.petals');
+  var ctx = cvs.getContext('2d');
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W = 0, H = 0, flakes = [], N = 52;
+
+  function resize(){
+    var r = card.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cvs.width = Math.round(W * dpr);
+    cvs.height = Math.round(H * dpr);
+    cvs.style.width = W + 'px';
+    cvs.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function make(init){
+    return {
+      x: Math.random() * W,
+      y: init ? Math.random() * H : -24,
+      r: Math.random() * 2.4 + 1.3,
+      vy: Math.random() * 0.5 + 0.35,
+      vx: (Math.random() - 0.5) * 0.3,
+      a: Math.random() * 6.28,
+      va: (Math.random() - 0.5) * 0.05,
+      o: Math.random() * 0.45 + 0.45,
+      ph: Math.random() * 6.28
+    };
+  }
+  function reset(){ flakes = []; for (var i = 0; i < N; i++) flakes.push(make(true)); }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < flakes.length; i++){
+      var f = flakes[i];
+      f.y += f.vy;
+      f.x += f.vx + Math.sin((f.y + f.ph * 40) / 70) * 0.35;
+      f.a += f.va;
+      if (f.y > H + 24 || f.x < -30 || f.x > W + 30){ flakes[i] = make(false); continue; }
+      ctx.save();
+      ctx.translate(f.x, f.y);
+      ctx.rotate(f.a);
+      ctx.fillStyle = 'rgba(255,252,246,' + f.o.toFixed(2) + ')';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, f.r * 1.7, f.r * 1.05, 0, 0, 6.2832);
+      ctx.fill();
+      ctx.restore();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  /* ---------- 打字 ---------- */
+  var lines = Array.prototype.slice.call(document.querySelectorAll('.bless p'));
+  var timers = [];
+  function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+  function clearAll(){ timers.forEach(clearTimeout); timers = []; }
+
+  function showAll(){
+    clearAll();
+    lines.forEach(function(p){
+      p.textContent = p.dataset.text;
+      p.classList.add('in');
+    });
+    revealDraw();
+  }
+  function revealDraw(){
+    var b = document.getElementById('drawEntry');
+    if (b) b.classList.add('show');
+  }
+  function typeLine(p, done){
+    var s = p.dataset.text, i = 0;
+    p.textContent = '';
+    p.classList.add('in');
+    (function step(){
+      i++;
+      p.textContent = s.slice(0, i);
+      if (i < s.length) later(step, 34);
+      else later(done, 240);
+    })();
+  }
+  function play(){
+    lines.forEach(function(p){ p.classList.remove('in'); p.textContent = ''; });
+    var delay = 500;
+    lines.forEach(function(p){
+      var len = p.dataset.text.length;
+      later(function(){ typeLine(p, function(){}); }, delay);
+      delay += Math.min(len * 36 + 300, 1400);
+    });
+    later(revealDraw, delay + 200);
+  }
+
+  /* ---------- 启动 ---------- */
+  resize();
+  reset();
+  window.addEventListener('resize', function(){ resize(); });
+
+  if (!reduce){
+    requestAnimationFrame(draw);
+    later(play, 350);
+  } else {
+    showAll();
+  }
+
+  /* ---------- 声音（Web Audio 现场合成，不需要任何音频文件） ---------- */
+  var sndBtn = document.getElementById('snd');
+  var sndHint = document.getElementById('sndHint');
+  var AC = window.AudioContext || window.webkitAudioContext;
+  var actx = null, master = null, musicTimer = null, musicOn = false;
+  var nextNoteTime = 0, stepIndex = 0;
+  window.__music = { started: false, steps: 0, error: null };
+
+  var STEP = 0.30;          /* 每个音符的时长（秒） */
+
+  var NOTE = {
+    G2:98.00, A2:110, C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196, A3:220,
+    C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, B4:493.88,
+    A4:440, C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99,
+    'G#5':830.61, A5:880, B5:987.77, C6:1046.5
+  };
+
+  /* 欢快版《欢乐颂》主题：C 大调，明亮跳跃 */
+  var MELODY = [
+    'E4','E4','F4','G4','G4','F4','E4','D4',
+    'C4','C4','D4','E4','E4','D4','D4','.',
+    'E4','E4','F4','G4','G4','F4','E4','D4',
+    'C4','C4','D4','E4','D4','C4','C4','.'
+  ];
+  var BASS = ['C3','G2','C3','G2','F2','C3','G2','C3'];
+
+  function bell(freq, t, dur, vol){
+    var o1 = actx.createOscillator(), o2 = actx.createOscillator();
+    var g = actx.createGain(), lp = actx.createBiquadFilter();
+    o1.type = 'triangle'; o1.frequency.value = freq;
+    o2.type = 'sine'; o2.frequency.value = freq * 2.004;
+    lp.type = 'lowpass'; lp.frequency.value = 4200;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o1.connect(g); o2.connect(g); g.connect(lp); lp.connect(master);
+    o1.start(t); o2.start(t);
+    o1.stop(t + dur + 0.05); o2.stop(t + dur + 0.05);
+  }
+
+  function pad(freq, t, dur, vol){
+    var o = actx.createOscillator(), g = actx.createGain(), lp = actx.createBiquadFilter();
+    o.type = 'sine'; o.frequency.value = freq;
+    lp.type = 'lowpass'; lp.frequency.value = 520;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.25);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(lp); lp.connect(master);
+    o.start(t); o.stop(t + dur + 0.05);
+  }
+
+  function scheduleStep(i, t){
+    var name = MELODY[i % MELODY.length];
+    if (name !== '.' && NOTE[name]) bell(NOTE[name], t, 1.05, 0.16);
+    if (i % 4 === 0){
+      var b = BASS[(Math.floor(i / 4)) % BASS.length];
+      if (NOTE[b]) pad(NOTE[b], t, 1.9, 0.1);
+    }
+    window.__music.steps++;
+  }
+
+  function pump(){
+    while (nextNoteTime < actx.currentTime + 0.18){
+      scheduleStep(stepIndex, nextNoteTime);
+      nextNoteTime += STEP;
+      stepIndex = (stepIndex + 1) % MELODY.length;
+    }
+  }
+
+  function startMusic(){
+    if (!AC || musicOn) return;
+    try {
+      if (!actx){
+        actx = new AC();
+        master = actx.createGain();
+        master.gain.value = 0.0001;
+        var dl = actx.createDelay(1.0), fb = actx.createGain(), wet = actx.createGain();
+        dl.delayTime.value = 0.35; fb.gain.value = 0.26; wet.gain.value = 0.3;
+        dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(actx.destination);
+        master.connect(actx.destination);
+        master.connect(dl);
+      }
+      if (actx.state === 'suspended') actx.resume();
+      musicOn = true;
+      window.__music.started = true;
+      nextNoteTime = actx.currentTime + 0.08;
+      master.gain.cancelScheduledValues(actx.currentTime);
+      master.gain.setValueAtTime(0.0001, actx.currentTime);
+      master.gain.exponentialRampToValueAtTime(0.5, actx.currentTime + 1.6);
+      pump();
+      musicTimer = setInterval(pump, 25);
+      sndBtn.classList.add('on');
+      sndBtn.textContent = '🔊';
+      sndHint.classList.add('hide');
+    } catch (err){
+      window.__music.error = String(err);
+    }
+  }
+
+  function stopMusic(){
+    if (!musicOn) return;
+    musicOn = false;
+    clearInterval(musicTimer);
+    if (actx && master){
+      master.gain.cancelScheduledValues(actx.currentTime);
+      master.gain.setValueAtTime(master.gain.value, actx.currentTime);
+      master.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.4);
+    }
+    sndBtn.classList.remove('on');
+    sndBtn.textContent = '🔇';
+  }
+
+  sndBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (musicOn) stopMusic(); else startMusic();
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (!actx) return;
+    if (document.hidden && musicOn && actx.suspend) actx.suspend();
+    else if (!document.hidden && musicOn && actx.resume) actx.resume();
+  });
+
+  /* 点一下屏幕：开音乐 + 直接全部显示 */
+  card.addEventListener('pointerdown', function(){
+    startMusic();
+    showAll();
+  }, { passive: true });
+
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' || e.key === ' '){ startMusic(); showAll(); }
+  });
+
+  /* ---------- 口令门禁 ---------- */
+  var GATE_PWD = 'luck';
+  var gate = document.getElementById('gate');
+  var gatePwd = document.getElementById('gatePwd');
+  var gateBtn = document.getElementById('gateBtn');
+  var unlocked = false;
+
+  function tryUnlock(){
+    if (unlocked) return;
+    if (gatePwd.value.trim().toLowerCase() === GATE_PWD){
+      unlocked = true;
+      gatePwd.disabled = true;
+      gateBtn.disabled = true;
+      gate.classList.add('hidden');
+      startMusic();
+    } else {
+      gatePwd.classList.add('wrong');
+      gatePwd.value = '';
+      gatePwd.focus();
+      setTimeout(function(){ gatePwd.classList.remove('wrong'); }, 500);
+    }
+  }
+
+  gateBtn.addEventListener('click', tryUnlock);
+  gatePwd.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryUnlock(); });
+
+  /* ---------- 抽签转盘 ---------- */
+  /* 想改签文，改下面这个数组即可（文字别太长，会被截断） */
+  var DRAW_ITEMS = [
+    '🍬 糖果大礼包', '🎃 南瓜灯护体', '👻 吓人小能手', '🌕 满月幸运星',
+    '🦇 蝙蝠侠附体', '🧹 魔法扫帚', '🕯️ 烛光晚餐', '🍭 甜蜜一整年'
+  ];
+
+  var drawOverlay = document.getElementById('drawOverlay');
+  var drawEntry = document.getElementById('drawEntry');
+  var drawSpin = document.getElementById('drawSpin');
+  var drawClose = document.getElementById('drawClose');
+  var drawResult = document.getElementById('drawResult');
+  var drawWheel = document.getElementById('drawWheel');
+  var drawPointer = document.getElementById('drawPointer');
+  var dwctx = drawWheel.getContext('2d');
+  var confetti2 = document.getElementById('confetti2');
+  var c2ctx = confetti2.getContext('2d');
+
+  var DW = 600, dcx = 300, dcy = 300, drad = 286;
+  var drawRotation = 0, drawSpinning = false;
+  var c2parts = [], c2raf = null;
+
+  var DRAW_COLORS = ['#f8973f','#5a2a78','#e06a15','#3b1f52','#ffbe7c','#2a1230','#c8500a','#4a1d6b'];
+
+  function drawWheelFn(rot){
+    dwctx.clearRect(0, 0, DW, DW);
+    var n = DRAW_ITEMS.length, sa = Math.PI * 2 / n, i;
+    for (i = 0; i < n; i++){
+      var a0 = rot + i * sa, a1 = a0 + sa;
+      dwctx.beginPath();
+      dwctx.moveTo(dcx, dcy);
+      dwctx.arc(dcx, dcy, drad, a0, a1);
+      dwctx.closePath();
+      dwctx.fillStyle = DRAW_COLORS[i % DRAW_COLORS.length];
+      dwctx.fill();
+      dwctx.strokeStyle = 'rgba(255,255,255,.22)';
+      dwctx.lineWidth = 2;
+      dwctx.stroke();
+      dwctx.save();
+      dwctx.translate(dcx, dcy);
+      dwctx.rotate(a0 + sa / 2);
+      dwctx.textAlign = 'center';
+      dwctx.textBaseline = 'middle';
+      dwctx.fillStyle = '#fff';
+      dwctx.font = 'bold 26px "PingFang SC","Microsoft YaHei",sans-serif';
+      dwctx.shadowColor = 'rgba(0,0,0,.5)';
+      dwctx.shadowBlur = 4;
+      var txt = DRAW_ITEMS[i];
+      if (txt.length > 7) txt = txt.slice(0, 7) + '…';
+      dwctx.fillText(txt, drad * 0.68, 0);
+      dwctx.restore();
+    }
+    dwctx.beginPath();
+    dwctx.arc(dcx, dcy, 30, 0, Math.PI * 2);
+    var g = dwctx.createRadialGradient(dcx, dcy, 0, dcx, dcy, 30);
+    g.addColorStop(0, '#fff7ea'); g.addColorStop(.6, '#ffbe7c'); g.addColorStop(1, '#c8500a');
+    dwctx.fillStyle = g;
+    dwctx.fill();
+    dwctx.strokeStyle = 'rgba(0,0,0,.3)';
+    dwctx.lineWidth = 3;
+    dwctx.stroke();
+    dwctx.beginPath();
+    dwctx.arc(dcx, dcy, drad, 0, Math.PI * 2);
+    dwctx.strokeStyle = 'rgba(255,190,124,.5)';
+    dwctx.lineWidth = 6;
+    dwctx.stroke();
+  }
+
+  var sfxCtx = null;
+  function sfx(){ if (!sfxCtx) sfxCtx = new (AC || window.webkitAudioContext)(); return sfxCtx; }
+
+  function drawTick(){
+    try {
+      var c = sfx(), o = c.createOscillator(), g = c.createGain();
+      o.connect(g); g.connect(c.destination);
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.05, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.06);
+      o.start(); o.stop(c.currentTime + 0.06);
+    } catch(e){}
+  }
+  function drawWin(){
+    try {
+      var c = sfx();
+      [523, 659, 784, 1047].forEach(function(f, i){
+        var o = c.createOscillator(), g = c.createGain();
+        o.connect(g); g.connect(c.destination);
+        o.type = 'triangle'; o.frequency.value = f;
+        var t = c.currentTime + i * 0.1;
+        g.gain.setValueAtTime(0.12, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        o.start(t); o.stop(t + 0.3);
+      });
+    } catch(e){}
+  }
+
+  function confetti2Burst(){
+    confetti2.width = window.innerWidth;
+    confetti2.height = window.innerHeight;
+    var colors = ['#f8973f','#ffbe7c','#c8500a','#5a2a78','#b07ce0','#ffd24a','#2a1230'];
+    c2parts = [];
+    for (var i = 0; i < 120; i++){
+      c2parts.push({
+        x: Math.random() * confetti2.width, y: -20 - Math.random() * 200,
+        w: 6 + Math.random() * 8, h: 4 + Math.random() * 10,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - .5) * 4, vy: 2 + Math.random() * 6,
+        rot: Math.random() * Math.PI * 2, rotV: (Math.random() - .5) * .3, op: 1
+      });
+    }
+    if (c2raf) cancelAnimationFrame(c2raf);
+    var st = performance.now();
+    function render(now){
+      var el = (now - st) / 1000;
+      c2ctx.clearRect(0, 0, confetti2.width, confetti2.height);
+      var alive = false;
+      for (var j = 0; j < c2parts.length; j++){
+        var p = c2parts[j];
+        if (el > 2.5) p.op = Math.max(0, p.op - 0.03);
+        if (p.op <= 0) continue;
+        alive = true;
+        p.x += p.vx; p.vy += 0.08; p.y += p.vy; p.rot += p.rotV;
+        c2ctx.save();
+        c2ctx.globalAlpha = Math.min(1, p.op);
+        c2ctx.translate(p.x, p.y);
+        c2ctx.rotate(p.rot);
+        c2ctx.fillStyle = p.color;
+        c2ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        c2ctx.restore();
+      }
+      if (alive && el < 3.5) c2raf = requestAnimationFrame(render);
+      else { c2ctx.clearRect(0, 0, confetti2.width, confetti2.height); c2raf = null; }
+    }
+    c2raf = requestAnimationFrame(render);
+  }
+
+  function doDraw(){
+    if (drawSpinning) return;
+    drawSpinning = true;
+    drawSpin.disabled = true;
+    drawResult.classList.remove('show');
+    drawResult.textContent = '';
+    drawPointer.classList.add('bounce');
+    var n = DRAW_ITEMS.length;
+    var idx = Math.floor(Math.random() * n);
+    var sa = Math.PI * 2 / n;
+    var targetAngle = -Math.PI / 2 - (idx + 0.5) * sa;
+    var full = (5 + Math.floor(Math.random() * 4)) * Math.PI * 2;
+    var targetMod = ((targetAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    var startMod = ((drawRotation % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    var total = full + ((targetMod - startMod + Math.PI * 2) % (Math.PI * 2));
+    var start = drawRotation;
+    var t0 = performance.now();
+    var dur = 2600 + Math.random() * 700;
+    var lastTick = 0;
+    function frame(now){
+      var p = Math.min((now - t0) / dur, 1);
+      var e = 1 - Math.pow(1 - p, 4);
+      drawRotation = start + total * e;
+      drawWheelFn(drawRotation);
+      var tp = Math.floor((now - t0) / 65);
+      if (tp > lastTick && p < 0.95){ drawTick(); lastTick = tp; }
+      if (p < 1){
+        requestAnimationFrame(frame);
+      } else {
+        drawSpinning = false;
+        drawSpin.disabled = false;
+        drawPointer.classList.remove('bounce');
+        drawWin();
+        confetti2Burst();
+        drawResult.textContent = '🎉 ' + DRAW_ITEMS[idx];
+        drawResult.classList.add('show');
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  drawEntry.addEventListener('click', function(){
+    drawOverlay.classList.add('open');
+    drawWheelFn(drawRotation);
+    startMusic();
+  });
+  drawClose.addEventListener('click', function(){ drawOverlay.classList.remove('open'); });
+  drawSpin.addEventListener('click', doDraw);
+
+  window.addEventListener('resize', function(){
+    confetti2.width = window.innerWidth;
+    confetti2.height = window.innerHeight;
+  });
+})();
+</script>
+</body>
+</html>
