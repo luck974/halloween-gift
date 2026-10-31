@@ -784,7 +784,7 @@
   var c2ctx = confetti2.getContext('2d');
 
   var DW = 600, dcx = 300, dcy = 300, drad = 286;
-  var drawRotation = 0, drawSpinning = false;
+  var drawRotation = 0, drawSpinning = false, drawDone = false;
   var c2parts = [], c2raf = null;
 
   var DRAW_COLORS = ['#f8973f','#5a2a78','#e06a15','#3b1f52','#ffbe7c','#2a1230','#c8500a','#4a1d6b'];
@@ -902,7 +902,7 @@
   }
 
   function doDraw(){
-    if (drawSpinning) return;
+    if (drawSpinning || drawDone) return;
     drawSpinning = true;
     drawSpin.disabled = true;
     drawResult.classList.remove('show');
@@ -931,7 +931,9 @@
         requestAnimationFrame(frame);
       } else {
         drawSpinning = false;
-        drawSpin.disabled = false;
+        drawDone = true;
+        drawSpin.disabled = true;
+        drawSpin.textContent = '已抽取 ✨';
         drawPointer.classList.remove('bounce');
         drawWin();
         confetti2Burst();
